@@ -1,0 +1,42 @@
+#!/bin/bash
+
+set -e
+
+# please edit these lines on calling your programs
+program_name="muscle"
+cmd="$program_name -threads 14 -super5"
+prog_alias="muscle5.1-super5"
+
+
+nowdir=`dirname $(readlink -f $0)`
+datafolder=$(cd $nowdir/Test && find -name '*' | cut -c 3-)
+dataset=$nowdir
+
+
+exportfile="$nowdir/$prog_alias.txt"
+
+# rm -rf $prog_alias # uncomment it if you want to rerun this program
+mkdir -p $prog_alias
+rm -f $exportfile
+
+date >> $exportfile
+for data in $datafolder
+do
+    if [ -f "$dataset/$prog_alias/$data" ]; then
+        echo "$dataset/$prog_alias/$data has aligned"
+    else
+        # $cmd $dataset/Test/$data > $dataset/$prog_alias/$data # For MAFFT
+        $cmd $dataset/Test/$data -output $dataset/$prog_alias/$data  # For common programs
+    fi
+done
+date >> $exportfile
+echo "OK on running."
+
+qscore=$nowdir'/qscore/bin/qscore'
+
+for data in $datafolder
+do
+    test_id=`basename $data .vie`
+    $qscore -test $dataset/$prog_alias/$data -ref $dataset/Ref/$test_id.ref -ignoretestcase -ignorerefcase -truncname >> $exportfile
+done
+echo "OK on testing."
