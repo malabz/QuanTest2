@@ -1,6 +1,6 @@
 # QuanTest2 using Q score and TC score
 
-modified by [wym6912](wym6912@outlook.com)
+modified by wym6912 (wym6912@outlook.com)
 
 Using this repository by testing protein sequences provided by `QuanTest2`.
 
